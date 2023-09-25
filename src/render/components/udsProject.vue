@@ -40,68 +40,15 @@
         </el-upload>
       </el-col>
       <el-col :span="9" :offset="1">
-        <el-tabs v-model="activeName">
-          <el-tab-pane label="DOCAN" name="can"
-            ><el-card>
-              <div slot="header" class="clearfix">
-                <span>DOCAN Service Table</span>
-              </div>
-              <IE mode="can" @imported="importCb" />
-              <div
-                v-for="(item, index) in project.can"
-                :key="index"
-                style="margin: 5px"
-              >
-                {{ item.name }}: {{ item.services.length }} services
-              </div>
-            </el-card></el-tab-pane
-          >
-          <el-tab-pane label="DOLIN" name="lin">
-            <el-card>
-              <div slot="header" class="clearfix">
-                <span>DOLIN Service Table</span>
-              </div>
-              <IE mode="lin" @imported="importCb" />
-              <div
-                v-for="(item, index) in project.lin"
-                :key="index"
-                style="margin: 5px"
-              >
-                {{ item.name }}: {{ item.services.length }} services
-              </div>
-            </el-card></el-tab-pane
-          >
-          <el-tab-pane label="DOIP" name="doip"
-            ><el-card>
-              <div slot="header" class="clearfix">
-                <span>DOIP Service Table</span>
-              </div>
-              <IE mode="doip" @imported="importCb" />
-              <div
-                v-for="(item, index) in project.eth"
-                :key="index"
-                style="margin: 5px"
-              >
-                {{ item.name }}: {{ item.services.length }} services
-              </div>
-            </el-card></el-tab-pane
-          >
-          <el-tab-pane label="Loopback" name="lp"
-            ><el-card>
-              <div slot="header" class="clearfix">
-                <span>Loopback Service Table</span>
-              </div>
-              <IE mode="lp" @imported="importCb" />
-              <div
-                v-for="(item, index) in project.simulate"
-                :key="index"
-                style="margin: 5px"
-              >
-                {{ item.name }}: {{ item.services.length }} services
-              </div>
-            </el-card></el-tab-pane
-          >
-        </el-tabs>
+        <h3>DOCAN Service Table</h3>
+        <IE mode="can" @imported="importCb" />
+        <div
+          v-for="(item, index) in project.can"
+          :key="index"
+          style="margin: 5px"
+        >
+          {{ item.name }}: {{ item.services.length }} services
+        </div>
       </el-col>
     </el-row>
   </div>

@@ -1,12 +1,12 @@
 {
-  "name": "ECUBus",
-  "author": "Frankie Zeng <frankie.zeng@nxp.com>",
-  "description": "ECUBus",
+  "name": "ecubus",
+  "author": "kms1212",
+  "description": "ECUBus, modified by kms1212, original repository created by Frankie Zeng <frankie.zeng@nxp.com>",
   "version": "0.2.24",
   "private": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/frankie-zeng/ECUBus.git"
+    "url": "https://github.com/kms1212/ECUBus-SEBA"
   },
   "postinstall": "electron-builder install-app-deps",
   "scripts": {
@@ -28,12 +28,13 @@
     "docdash": "^1.2.0",
     "electron-log": "^4.2.1",
     "electron-updater": "^4.3.1",
-    "element-ui": "^2.4.5",
+    "element-ui": "^2.15.14",
     "jsdoc": "^3.6.6",
     "jshint-esnext": "^2.7.0-3",
     "node-addon-api": "^3.1.0",
     "node-addon-loader": "0.0.6",
     "node-aes-cmac": "^0.1.1",
+    "node-gyp": "^9.4.0",
     "patch-package": "^6.2.0",
     "sortablejs": "^1.10.2",
     "sprintf-js": "^1.1.2",
@@ -52,7 +53,7 @@
     "@vue/cli-plugin-vuex": "~4.2.0",
     "@vue/cli-service": "~4.2.0",
     "babel-eslint": "^10.0.3",
-    "electron": "13.6.6",
+    "electron": "^11.5.0",
     "electron-devtools-installer": "^3.1.1",
     "electron-rebuild": "^1.10.0",
     "eslint": "^6.7.2",

@@ -1,8 +1,8 @@
 
 <template>
-  <div>
-    <el-row style="margin-top: 10px">
-      <el-col :span="22" :offset="1" style="text-align: right">
+  <div style="height: 100%;">
+    <el-row style="margin-top: 10px; display: flex;">
+      <el-col style="flex: 0 0 250px">
         Log Level:
         <el-select
           v-model="logLevel"
@@ -18,7 +18,10 @@
           <el-option value="warn" />
           <el-option value="error" />
           <el-option value="false" /> </el-select
-        >Suppress Delay:
+        ><br />
+      </el-col>
+      <el-col style="flex: 0 0 250px">
+        Suppress Delay:
         <el-input
           v-model="sDelay"
           size="small"
@@ -26,7 +29,10 @@
           style="width: 80px"
           maxlength="6"
         ></el-input
-        >ms, Timeout:
+        >ms<br />
+      </el-col>
+      <el-col style="flex: 0 0 250px">
+        Timeout:
         <el-input
           v-model="udsTimeout"
           size="small"
@@ -35,7 +41,10 @@
           maxlength="6"
           :disabled="mode === 'lp'"
         ></el-input
-        >ms, Cycle:
+        >ms<br />
+      </el-col>
+      <el-col style="flex: 0 0 250px">
+        Cycle:
         <el-input-number
           v-model.number="cycle"
           controls-position="right"
@@ -45,10 +54,7 @@
         ></el-input-number>
         <!-- <el-button @click="run" size="small" type="success" :disabled="!connected||running">开始</el-button> -->
       </el-col>
-    </el-row>
-    <Progress ref="prog" />
-    <el-row style="margin-top: 10px">
-      <el-col :span="22" :offset="1" style="text-align: right">
+      <el-col style="text-align: right; flex: 1 0 0">
         <el-button
           @click="run"
           size="small"
@@ -58,6 +64,7 @@
         >
       </el-col>
     </el-row>
+    <Progress ref="prog" />
 
     <div id="terminal" class="logWindow"></div>
   </div>

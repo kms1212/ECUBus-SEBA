@@ -30,7 +30,12 @@
       </el-row> -->
       <serviceTable mode="can" ref="serviceTable" />
     </div>
-    <Excute mode="can" />
+    <el-button :class="[log ? 'el-icon-caret-bottom' : 'el-icon-caret-right']" @click="log = !log">
+      Open Transfer Log
+    </el-button>
+    <transition name="el-zoom-in-top">
+      <Excute mode="can" v-if="log" />
+    </transition>
   </div>
 </template>
 <script>
@@ -51,6 +56,7 @@ export default {
       cd: false,
       uds: false,
       group: false,
+      log: false,
     };
   },
   computed: {
@@ -72,7 +78,7 @@ export default {
       this.$refs.serviceTable.update();
     },
     goBack() {
-      this.$router.push("/uds");
+      this.$router.push("/");
     },
   },
 };
