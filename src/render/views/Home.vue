@@ -126,6 +126,14 @@ export default {
           let config = JSON.parse(
             fs.readFileSync(path.join(val[0], "config.json"))
           );
+          if (config.version != topPack.version) {
+            this.$notify.error({
+              title: "error",
+              message: `This project file is not compatible with this version of ECUBus. Please migrate the project file.`,
+            });
+            return;
+          }
+
           this.$store.commit("setUdsProject", {
             key: "name",
             val: config.name,
@@ -139,7 +147,9 @@ export default {
             key: "version",
             val: config.version,
           });
-          this.$store.commit("canAddrLoad", config.canAddr)
+          this.$store.commit("canAddrLoad", []);
+          this.$store.commit("canAddrCfgLoad", config.canAddr);
+          this.$store.commit("canDevSettingsLoad", config.canDevSettings);
           this.$store.commit("setUdsProjectPath", val[0]);
           ipcRenderer.send("udsProjectPath", val[0]);
         } catch {
@@ -178,6 +188,7 @@ export default {
             });
             this.$store.commit("canTableLoad", []);
             this.$store.commit("canAddrLoad", []);
+            this.$store.commit("canAddrCfgLoad", []);
             this.$store.commit("setUdsProject", {
               key: "fileList",
               val: [],

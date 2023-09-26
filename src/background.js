@@ -16,6 +16,7 @@ const path = require('path');
 const log = require('electron-log');
 // enable ipc 
 log.transports.ipc.level='info'
+console.log = log.log;
 
 const { autoUpdater } = require("electron-updater")
 const CANUDS = require('./uds/canuds.js')

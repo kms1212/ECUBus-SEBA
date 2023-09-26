@@ -16,8 +16,17 @@ export default new Vuex.Store({
     udsProject:{
       name:'',
       can:[],
-      canAddr: [],
+      canAddr:[],
       fileList:[],
+      canDevSettings:{
+        canfd: false,
+        device: 0x51,
+        fdNomSpeed: "f_clock=80000000,nom_brp=10,nom_tseg1=12,nom_tseg2=3,nom_sjw=1,",
+        fdDataSpeed: "data_brp=4,data_tseg1=7,data_tseg2=2,data_sjw=1",
+        speed: 0x001C,
+        padding: false,
+        fdTlc: 8
+      },
       version:''
     },
     udsProjectPath:''
@@ -52,14 +61,21 @@ export default new Vuex.Store({
     /* can addr table */
     canAddrAdd(state, item) {
       state.canAddrTable.push(item);
-      state.udsProject.canAddr.push(item);
     },
     canAddrDelete(state, index) {
       state.canAddrTable.splice(index, 1);
-      state.udsProject.canAddr.splice(index, 1);
     },
     canAddrLoad(state, data) {
       Vue.set(state,"canAddrTable",data);
+    },
+    /* can addr config table */
+    canAddrCfgAdd(state, item) {
+      state.udsProject.canAddr.push(item);
+    },
+    canAddrCfgDelete(state, index) {
+      state.udsProject.canAddr.splice(index, 1);
+    },
+    canAddrCfgLoad(state, data) {
       Vue.set(state.udsProject,"canAddr",data);
     },
     /*can table*/
@@ -67,6 +83,10 @@ export default new Vuex.Store({
       Vue.set(state,"canTable",data);
       Vue.set(state.udsProject,"can",data);
     },
+    /* can device settings */
+    canDevSettingsLoad(state, data) {
+      Vue.set(state.udsProject, "canDevSettings", data);
+    }
   },
   actions: {
 

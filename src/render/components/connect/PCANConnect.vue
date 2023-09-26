@@ -33,7 +33,7 @@
         <el-col :span="11">
           <el-select v-model="speed" placeholder="Speed" :disabled="connected">
             <el-option
-              v-for="item in canSpeed"
+              v-for="item in speedSel"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -56,9 +56,9 @@
       </el-row>
       <el-row>
         <el-col :span="8">
-          <el-select v-model="nomSpeed" placeholder="Speed" :disabled="connected">
+          <el-select v-model="nomSpeed" placeholder="Nominal Speed" :disabled="connected">
             <el-option
-              v-for="item in canNomSpeed"
+              v-for="item in nomSpeedSel"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -66,9 +66,9 @@
           </el-select>
         </el-col>
         <el-col :span="8" :offset="1">
-          <el-select v-model="dataSpeed" placeholder="Speed" :disabled="connected">
+          <el-select v-model="dataSpeed" placeholder="Data Speed" :disabled="connected">
             <el-option
-              v-for="item in canDataSpeed"
+              v-for="item in dataSpeedSel"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -95,8 +95,8 @@
         <el-button type="danger" plain @click="disconnect">Disconnect</el-button>
       </el-col>
     </el-row>
-    <el-divider></el-divider>
-    <div>
+    <el-divider v-show="connected"></el-divider>
+    <div v-show="connected">
       <el-form :model="tpConfig" :disabled="!connected">
         <el-form-item label="Name:">
           <el-input v-model="tpConfig.name" placeholder="Name" maxlength="20" style="width:180px"></el-input>
@@ -191,7 +191,7 @@
         </el-form-item>
       </el-form>
     </div>
-    <el-table size="mini" :data="addrTable" style="width: 100%" empty-text="No Data">
+    <el-table size="mini" :data="addrTable" style="width: 100%" empty-text="No Data" v-show="connected">
       <el-table-column type="index" width="50" align="center"></el-table-column>
       <el-table-column prop="name" label="Name" width="100" align="center"></el-table-column>
       <el-table-column prop="txId" label="Send ID" width="250" align="center">
@@ -274,6 +274,11 @@
 
 const { ipcRenderer } = require("electron");
 export default {
+  mounted() {
+    this.speed = this.$store.state.udsProject.canDevSettings.speed;
+    this.nomSpeed = this.$store.state.udsProject.canDevSettings.fdNomSpeed;
+    this.dataSpeed = this.$store.state.udsProject.canDevSettings.fdDataSpeed;
+  },
   data: function() {
     return {
       tpConfig: {
@@ -288,8 +293,8 @@ export default {
         IDTYPE: 1,
         TA_TYPE: 1,
       },
-      tlc:8,
-      padding:false,
+      tlc:this.$store.state.udsProject.canDevSettings.fdTlc,
+      padding:this.$store.state.udsProject.canDevSettings.padding,
       formatList: [
         {
           label: "Normal addressing",
@@ -312,8 +317,8 @@ export default {
         //   value: PCANTP.PCANTP_FORMAT_ENHANCED
         // }
       ],
-      canfd: false,
-      device: 0x51,
+      canfd: this.$store.state.udsProject.canDevSettings.canfd,
+      device: this.$store.state.udsProject.canDevSettings.device,
       deviceList: [
         {
           label: "PEAK-USB1",
@@ -324,7 +329,7 @@ export default {
           value: 0x52
         }
       ],
-      speed: 0x001c,
+      speed: null,
       fdTLC:[
         {
           label:'8',
@@ -359,58 +364,82 @@ export default {
           value:15
         },
       ],
-      canSpeed: [
+      nomSpeed: null,
+      dataSpeed: null,
+      speedSel: [
         {
           label: "250 KBit/s",
-          value: 0x011c
+          value: "SPD_250Kbps"
         },
         {
           label: "500 KBit/s",
-          value: 0x001c
+          value: "SPD_500Kbps"
         },
         {
           label: "1 MBit/s",
-          value: 0x0014
+          value: "SPD_1Mbps"
         }
       ],
-      nomSpeed:
-        "f_clock=80000000,nom_brp=10,nom_tseg1=12,nom_tseg2=3,nom_sjw=1,",
-      canNomSpeed: [
+      nomSpeedSel: [
         {
           label: "500 KBit/s",
-          value:
-            "f_clock=80000000,nom_brp=10,nom_tseg1=12,nom_tseg2=3,nom_sjw=1,"
+          value: "SPD_500Kbps"
         },
         {
           label: "1 MBit/s",
-          value:
-            "f_clock=80000000,nom_brp=10,nom_tseg1=5,nom_tseg2=2,nom_sjw=1,"
+          value: "SPD_1Mbps"
         }
       ],
-      dataSpeed: "data_brp=4,data_tseg1=7,data_tseg2=2,data_sjw=1",
-      canDataSpeed: [
+      dataSpeedSel: [
         {
           label: "500 KBit/s",
-          value: "data_brp=16,data_tseg1=7,data_tseg2=2,data_sjw=1"
+          value: "SPD_500Kbps"
         },
         {
           label: "1 MBit/s",
-          value: "data_brp=8,data_tseg1=7,data_tseg2=2,data_sjw=1"
+          value: "SPD_1Mbps"
         },
         {
           label: "2 MBit/s",
-          value: "data_brp=4,data_tseg1=7,data_tseg2=2,data_sjw=1"
+          value: "SPD_2Mbps"
         },
         {
           label: "4 MBit/s",
-          value: "data_brp=2,data_tseg1=7,data_tseg2=2,data_sjw=1"
-        }
-      ]
+          value: "SPD_4Mbps"
+        },
+      ],
+      speedValue: {
+        SPD_250kbps: 0x011C,
+        SPD_500kbps: 0x001C,
+        SPD_1Mbps: 0x0014,
+      },
+      nomSpeedValue: {
+        SPD_500kbps:
+          "f_clock=80000000,nom_brp=10,nom_tseg1=12,nom_tseg2=3,nom_sjw=1,",
+        SPD_1Mbps: 
+          "f_clock=80000000,nom_brp=10,nom_tseg1=5,nom_tseg2=2,nom_sjw=1,",
+      },
+      dataSpeedValue: {
+        SPD_500kbps:
+          "data_brp=16,data_tseg1=7,data_tseg2=2,data_sjw=1",
+        SPD_1Mbps: 
+          "data_brp=8,data_tseg1=7,data_tseg2=2,data_sjw=1",
+        SPD_2Mbps: 
+          "data_brp=4,data_tseg1=7,data_tseg2=2,data_sjw=1",
+        SPD_4Mbps: 
+          "data_brp=2,data_tseg1=7,data_tseg2=2,data_sjw=1",
+      },
     };
   },
   computed: {
     addrTable: function() {
       return this.$store.state.canAddrTable;
+    },
+    addrConfig: function() {
+      return this.$store.state.udsProject.canAddr;
+    },
+    canDevSettings: function() {
+      return this.$store.state.canDevSettings;
     },
     connected: function() {
       return this.$store.state.canConnect;
@@ -469,10 +498,9 @@ export default {
       }
       this.$store.commit("canAddrDelete", index);
     },
-    setupAddr() {
-      var item = JSON.parse(JSON.stringify(this.tpConfig));
+    registerAddr(tpconfig, mapMust) {
       for (var i in this.addrTable) {
-        if (this.addrTable[i].name === item.name) {
+        if (this.addrTable[i].name === tpconfig.name) {
           this.$notify.error({
             title: "Error",
             message: "Name Exist"
@@ -480,32 +508,35 @@ export default {
           return;
         }
       }
-      if (item.SA === item.TA) {
+      if (tpconfig.SA === tpconfig.TA) {
         this.$notify.error({
           title: "Error",
           message: "SA Equal TA"
         });
         return;
       }
-      if ((item.txId === item.rxId) && (this.mapMust)) {
+      if ((tpconfig.txId === tpconfig.rxId) && (mapMust)) {
         this.$notify.error({
           title: "Error",
           message: "TX_ID Equal RX_ID"
         });
         return;
       }
-      item.maped = this.mapMust;
-      item.SA = parseInt(item.SA, 16);
-      item.TA = parseInt(item.TA, 16);
-      item.RA = parseInt(item.RA, 16);
 
-      if (this.mapMust === false) {
-        item.rxId = this.rxId;
-        item.txId = this.txId;
+      let tpconfig_rawval = tpconfig;
+
+      tpconfig.maped = mapMust;
+      tpconfig.SA = parseInt(tpconfig.SA, 16);
+      tpconfig.TA = parseInt(tpconfig.TA, 16);
+      tpconfig.RA = parseInt(tpconfig.RA, 16);
+
+      if (mapMust === false) {
+        tpconfig.rxId = this.rxId;
+        tpconfig.txId = this.txId;
       } else {
-        item.rxId = parseInt(item.rxId, 16);
-        item.txId = parseInt(item.txId, 16);
-        let err = ipcRenderer.sendSync("canAddMap", item);
+        tpconfig.rxId = parseInt(tpconfig.rxId, 16);
+        tpconfig.txId = parseInt(tpconfig.txId, 16);
+        let err = ipcRenderer.sendSync("canAddMap", tpconfig);
         if (err.err !== 0) {
           this.$notify.error({
             title: "Error",
@@ -514,20 +545,51 @@ export default {
           return;
         }
       }
-      this.$store.commit("canAddrAdd", item);
+      this.$store.commit("canAddrAdd", tpconfig);
+      this.$store.commit("canAddrCfgAdd", tpconfig_rawval);
+    },
+    setupAddr() {
+      var tpconfig = JSON.parse(JSON.stringify(this.tpConfig));
+      this.registerAddr(tpconfig, this.mapMust);
+    },
+    importAddr() {
+      for (var i in this.addrConfig) {
+        let addrConfig = this.addrConfig[i];
+        addrConfig.SA = addrConfig.SA.toString(16);
+        addrConfig.TA = addrConfig.TA.toString(16);
+        addrConfig.RA = addrConfig.RA.toString(16);
+        addrConfig.rxId = addrConfig.rxId.toString(16);
+        addrConfig.txId = addrConfig.txId.toString(16);
+        this.registerAddr(this.addrConfig[i], this.addrConfig[i].maped);
+      }
     },
     connect() {
       let err;
       if (this.canfd) {
+        let nomSpeed = this.nomSpeedValue[this.nomSpeed];
+        let dataSpeed = this.dataSpeedValue[this.dataSpeed];
+        
         err = ipcRenderer.sendSync("canConnectFd", [
           this.device,
-          this.nomSpeed + this.dataSpeed,
+          nomSpeed + dataSpeed,
           this.padding,
           this.tlc
         ]);
       } else {
-        err = ipcRenderer.sendSync("canConnect", [this.device, this.speed, this.padding]);
+        let speed = this.speedValue[this.speed];
+        err = ipcRenderer.sendSync("canConnect", [this.device, speed, this.padding]);
       }
+
+      this.$store.commit("canDevSettingsLoad", {
+        canfd: this.canfd,
+        device: this.device,
+        fdNomSpeed: this.nomSpeed,
+        fdDataSpeed: this.dataSpeed,
+        speed: this.speed,
+        padding: this.padding,
+        fdTlc: this.tlc
+      });
+
       if (err.err === 0) {
         // this.connected = true
         this.$store.commit("canChange", true);
@@ -537,12 +599,16 @@ export default {
           message: err.msg
         });
       }
+
+      this.importAddr();
     },
     disconnect() {
+      for (let i = 0; i < this.addrTable.length; i++) {
+        this.handleDelete(0);
+      }
       let err = ipcRenderer.sendSync("canDisconnect", this.device);
       if (err.err === 0) {
         this.$store.commit("canChange", false);
-        this.$store.commit("canAddrLoad", []);
       } else {
         this.$notify.error({
           title: "Error",
@@ -550,7 +616,7 @@ export default {
         });
       }
     }
-  }
+  },
 };
 </script>
 <style>

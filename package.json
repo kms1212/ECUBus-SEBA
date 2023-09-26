@@ -2,7 +2,7 @@
   "name": "ecubus",
   "author": "kms1212",
   "description": "ECUBus, modified by kms1212, original repository created by Frankie Zeng <frankie.zeng@nxp.com>",
-  "version": "0.2.24",
+  "version": "1.2.24",
   "private": false,
   "repository": {
     "type": "git",

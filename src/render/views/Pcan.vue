@@ -34,7 +34,7 @@
       Open Transfer Log
     </el-button>
     <transition name="el-zoom-in-top">
-      <Excute mode="can" v-if="log" />
+      <Excute mode="can" v-show="log" />
     </transition>
   </div>
 </template>
@@ -56,7 +56,7 @@ export default {
       cd: false,
       uds: false,
       group: false,
-      log: false,
+      log: true,
     };
   },
   computed: {

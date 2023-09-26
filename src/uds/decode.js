@@ -54,7 +54,7 @@ function payload2data(payload) {
     for (i in payload) {
         $[payload[i].name] = payload[i][payload[i].name]
     }
-    console.log($)
+    console.log(JSON.stringify($))
     var buf
     for (i in payload) {
         if (payload[i].type === 'subfunction') {

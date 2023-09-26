@@ -54,6 +54,7 @@
         ></el-input-number>
         <!-- <el-button @click="run" size="small" type="success" :disabled="!connected||running">开始</el-button> -->
       </el-col>
+      <Progress ref="prog" />
       <el-col style="text-align: right; flex: 1 0 0">
         <el-button
           @click="run"
@@ -64,7 +65,6 @@
         >
       </el-col>
     </el-row>
-    <Progress ref="prog" />
 
     <div id="terminal" class="logWindow"></div>
   </div>
